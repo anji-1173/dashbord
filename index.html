@@ -149,6 +149,38 @@
     font-size:0.8rem;
     color:var(--muted);
   }
+  .item-list{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    margin-top:2px;
+    border-top:1px solid var(--line);
+    padding-top:8px;
+  }
+  .item-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .item-thumb{
+    flex:none;
+    width:24px;
+    height:24px;
+    border-radius:6px;
+    background:#f0ede6 center/cover no-repeat;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:0.85rem;
+  }
+  .item-name{
+    flex:1;
+    font-size:0.8rem;
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
 </style>
 </head>
 <body>
@@ -216,41 +248,34 @@ const PROJECTS = [
     updated: "2026-08-22",
   },
   {
-    name: "沖縄そばおじさん",
+    name: "LINEスタンプ",
     category: "stamp",
-    desc: "LINE STOREで販売中のオリジナルスタンプ。",
-    image: "",
+    desc: "LINE STOREで販売中のオリジナルスタンプ、4種類。",
     icon: "💬",
-    link: "https://store.line.me/stickershop/product/35734617/ja",
     status: "sale",
     updated: "",
-  },
-  {
-    name: "沖縄サーフィン波情報スタンプ",
-    category: "stamp",
-    desc: "LINE STOREで販売中のオリジナルスタンプ。",
-    image: "images/line-surf.jpg",
-    link: "https://store.line.me/stickershop/product/35759399/ja",
-    status: "sale",
-    updated: "",
-  },
-  {
-    name: "バレーボール仲間のスタンプ",
-    category: "stamp",
-    desc: "LINE STOREで販売中のオリジナルスタンプ。",
-    image: "images/line-volleyball.jpg",
-    link: "https://store.line.me/stickershop/product/35765676/ja",
-    status: "sale",
-    updated: "",
-  },
-  {
-    name: "うちなーぐち一家",
-    category: "stamp",
-    desc: "LINE STOREで販売中のオリジナルスタンプ。",
-    image: "images/line-uchinaaguchi.jpg",
-    link: "https://store.line.me/stickershop/product/35680927/ja",
-    status: "sale",
-    updated: "",
+    items: [
+      {
+        name: "沖縄そばおじさん",
+        image: "",
+        link: "https://store.line.me/stickershop/product/35734617/ja",
+      },
+      {
+        name: "沖縄サーフィン波情報スタンプ",
+        image: "images/line-surf.jpg",
+        link: "https://store.line.me/stickershop/product/35759399/ja",
+      },
+      {
+        name: "バレーボール仲間のスタンプ",
+        image: "images/line-volleyball.jpg",
+        link: "https://store.line.me/stickershop/product/35765676/ja",
+      },
+      {
+        name: "うちなーぐち一家",
+        image: "images/line-uchinaaguchi.jpg",
+        link: "https://store.line.me/stickershop/product/35680927/ja",
+      },
+    ],
   },
 ];
 
@@ -297,30 +322,71 @@ function render(filter){
       desc.textContent = p.desc;
       body.appendChild(desc);
 
-      const footer = document.createElement("div");
-      footer.className = "card-footer";
+      if (p.items) {
+        const list = document.createElement("div");
+        list.className = "item-list";
+        p.items.forEach(item => {
+          const row = document.createElement("div");
+          row.className = "item-row";
 
-      const updated = document.createElement("span");
-      updated.className = "updated";
-      updated.textContent = p.updated ? "更新: " + p.updated : "";
-      footer.appendChild(updated);
+          const itemThumb = document.createElement("div");
+          itemThumb.className = "item-thumb";
+          if (item.image) {
+            itemThumb.style.backgroundImage = `url("${item.image}")`;
+          } else {
+            itemThumb.textContent = "🖼️";
+          }
+          row.appendChild(itemThumb);
 
-      if (p.link) {
-        const a = document.createElement("a");
-        a.className = "open-link";
-        a.href = p.link;
-        a.target = "_blank";
-        a.rel = "noopener";
-        a.textContent = "開く →";
-        footer.appendChild(a);
+          const itemName = document.createElement("span");
+          itemName.className = "item-name";
+          itemName.textContent = item.name;
+          row.appendChild(itemName);
+
+          if (item.link) {
+            const a = document.createElement("a");
+            a.className = "open-link";
+            a.href = item.link;
+            a.target = "_blank";
+            a.rel = "noopener";
+            a.textContent = "開く →";
+            row.appendChild(a);
+          } else {
+            const span = document.createElement("span");
+            span.className = "no-link";
+            span.textContent = "リンク未設定";
+            row.appendChild(span);
+          }
+
+          list.appendChild(row);
+        });
+        body.appendChild(list);
       } else {
-        const span = document.createElement("span");
-        span.className = "no-link";
-        span.textContent = "リンク未設定";
-        footer.appendChild(span);
-      }
+        const footer = document.createElement("div");
+        footer.className = "card-footer";
 
-      body.appendChild(footer);
+        const updated = document.createElement("span");
+        updated.className = "updated";
+        updated.textContent = p.updated ? "更新: " + p.updated : "";
+        footer.appendChild(updated);
+
+        if (p.link) {
+          const a = document.createElement("a");
+          a.className = "open-link";
+          a.href = p.link;
+          a.target = "_blank";
+          a.rel = "noopener";
+          a.textContent = "開く →";
+          footer.appendChild(a);
+        } else {
+          const span = document.createElement("span");
+          span.className = "no-link";
+          span.textContent = "リンク未設定";
+          footer.appendChild(span);
+        }
+
+        body.appendChild(footer);
+      }
       card.appendChild(body);
       grid.appendChild(card);
     });
