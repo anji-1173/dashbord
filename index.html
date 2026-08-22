@@ -66,12 +66,15 @@
     color:#fff;
   }
   main{
-    max-width:760px;
+    max-width:1000px;
     margin:0 auto;
     padding:0 20px 60px;
-    display:flex;
-    flex-direction:column;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
     gap:12px;
+  }
+  @media (max-width:640px){
+    main{grid-template-columns:1fr;}
   }
   .card{
     background:var(--card);
