@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>あんじさんの制作物ダッシュボード</title>
+<style>
+  :root{
+    --bg:#f5f3ef;
+    --card:#ffffff;
+    --text:#2b2a28;
+    --muted:#767268;
+    --line:#e6e2da;
+    --accent:#c96b4a;
+    --badge-live-bg:#e4f3ea;
+    --badge-live-text:#1f7a4d;
+    --badge-sale-bg:#fdecd8;
+    --badge-sale-text:#a15c14;
+    --badge-wip-bg:#eee9f7;
+    --badge-wip-text:#5b4b9c;
+    --badge-unknown-bg:#eee;
+    --badge-unknown-text:#666;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  header{
+    padding:32px 20px 16px;
+    max-width:1000px;
+    margin:0 auto;
+  }
+  header h1{
+    margin:0 0 6px;
+    font-size:1.5rem;
+  }
+  header p{
+    margin:0;
+    color:var(--muted);
+    font-size:0.9rem;
+  }
+  .filters{
+    max-width:1000px;
+    margin:0 auto;
+    padding:0 20px 20px;
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .filters button{
+    border:1px solid var(--line);
+    background:var(--card);
+    color:var(--text);
+    padding:8px 16px;
+    border-radius:999px;
+    font-size:0.85rem;
+    cursor:pointer;
+  }
+  .filters button.active{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#fff;
+  }
+  main{
+    max-width:1000px;
+    margin:0 auto;
+    padding:0 20px 60px;
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+    gap:20px;
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+  .thumb{
+    aspect-ratio:16/10;
+    background:#f0ede6 center/cover no-repeat;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:2.2rem;
+  }
+  .card-body{
+    padding:16px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    flex:1;
+  }
+  .card-title{
+    margin:0;
+    font-size:1.05rem;
+  }
+  .card-desc{
+    margin:0;
+    color:var(--muted);
+    font-size:0.85rem;
+    line-height:1.5;
+    flex:1;
+  }
+  .badge{
+    display:inline-block;
+    align-self:flex-start;
+    padding:3px 10px;
+    border-radius:999px;
+    font-size:0.72rem;
+    font-weight:600;
+  }
+  .badge.live{background:var(--badge-live-bg);color:var(--badge-live-text);}
+  .badge.sale{background:var(--badge-sale-bg);color:var(--badge-sale-text);}
+  .badge.wip{background:var(--badge-wip-bg);color:var(--badge-wip-text);}
+  .badge.unknown{background:var(--badge-unknown-bg);color:var(--badge-unknown-text);}
+  .card-footer{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:4px;
+  }
+  .updated{
+    font-size:0.72rem;
+    color:var(--muted);
+  }
+  .open-link{
+    font-size:0.85rem;
+    color:var(--accent);
+    text-decoration:none;
+    font-weight:600;
+  }
+  .open-link:hover{text-decoration:underline;}
+  .no-link{
+    font-size:0.8rem;
+    color:var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>あんじさんの制作物ダッシュボード</h1>
+  <p>これまで作ったウェブアプリ・作品を一覧にしています。新しいものができたら、ハルに「追加して」と言ってください。</p>
+</header>
+
+<div class="filters" id="filters"></div>
+
+<main id="grid"></main>
+
+<script>
+const CATEGORIES = {
+  webapp: "ウェブアプリ",
+  stamp: "LINEスタンプ",
+};
+
+// 新しい制作物を追加したいときは、この配列に1ブロック足すだけでOKです。
+const PROJECTS = [
+  {
+    name: "全国波情報",
+    category: "webapp",
+    desc: "全国36のサーフスポットの波・風・潮汐をまとめて見られるアプリ。",
+    image: "images/nami-info.png",
+    link: "https://anji-1173.github.io/nami-info/",
+    status: "live",
+    updated: "2026-08-15",
+  },
+  {
+    name: "タイムロガー",
+    category: "webapp",
+    desc: "毎日の行動記録をブラウザに保存できる、自分専用のタイムロガー。",
+    image: "images/timelogger.png",
+    link: "https://anji-1173.github.io/timelogger/",
+    status: "live",
+    updated: "2026-08-09",
+  },
+  {
+    name: "島酒図鑑(泡盛図鑑)",
+    category: "webapp",
+    desc: "沖縄の泡盛48酒造所を、マップや銘柄棚から巡れる図鑑ページ。",
+    image: "images/awamori-zukan.png",
+    link: "https://anji-1173.github.io/awamori-zukan/",
+    status: "live",
+    updated: "2026-08-10",
+  },
+  {
+    name: "御願（うがん）ごよみ",
+    category: "webapp",
+    desc: "旧盆・シーミー・彼岸など、沖縄の年中行事の日程とお供えの仕方が分かるアプリ。",
+    image: "images/ugwan-goyomi.png",
+    link: "https://anji-1173.github.io/ugwan-goyomi/",
+    status: "live",
+    updated: "2026-08-16",
+  },
+  {
+    name: "沖縄そば巡りの旅ブログ",
+    category: "webapp",
+    desc: "note連載「沖縄そば巡りの旅」をもとにした、お店紹介ブログサイト。",
+    image: "images/okinawa-soba.jpg",
+    link: "https://anji-1173.github.io/okinawa-soba/",
+    status: "live",
+    updated: "2026-08-16",
+  },
+  {
+    name: "LINEスタンプ",
+    category: "stamp",
+    desc: "LINE STOREで販売中のオリジナルスタンプ。（タイトル・リンクは追って追加します）",
+    image: "",
+    icon: "💬",
+    link: "",
+    status: "sale",
+    updated: "",
+  },
+];
+
+const STATUS_LABEL = {
+  live: "公開中",
+  sale: "販売中",
+  wip: "作成中",
+  unknown: "未確認",
+};
+
+function render(filter){
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+  PROJECTS
+    .filter(p => filter === "all" || p.category === filter)
+    .forEach(p => {
+      const card = document.createElement("div");
+      card.className = "card";
+
+      const thumb = document.createElement("div");
+      thumb.className = "thumb";
+      if (p.image) {
+        thumb.style.backgroundImage = `url("${p.image}")`;
+      } else {
+        thumb.textContent = p.icon || "🖼️";
+      }
+      card.appendChild(thumb);
+
+      const body = document.createElement("div");
+      body.className = "card-body";
+
+      const badge = document.createElement("span");
+      badge.className = "badge " + (p.status || "unknown");
+      badge.textContent = STATUS_LABEL[p.status] || "未確認";
+      body.appendChild(badge);
+
+      const title = document.createElement("h2");
+      title.className = "card-title";
+      title.textContent = p.name;
+      body.appendChild(title);
+
+      const desc = document.createElement("p");
+      desc.className = "card-desc";
+      desc.textContent = p.desc;
+      body.appendChild(desc);
+
+      const footer = document.createElement("div");
+      footer.className = "card-footer";
+
+      const updated = document.createElement("span");
+      updated.className = "updated";
+      updated.textContent = p.updated ? "更新: " + p.updated : "";
+      footer.appendChild(updated);
+
+      if (p.link) {
+        const a = document.createElement("a");
+        a.className = "open-link";
+        a.href = p.link;
+        a.target = "_blank";
+        a.rel = "noopener";
+        a.textContent = "開く →";
+        footer.appendChild(a);
+      } else {
+        const span = document.createElement("span");
+        span.className = "no-link";
+        span.textContent = "リンク未設定";
+        footer.appendChild(span);
+      }
+
+      body.appendChild(footer);
+      card.appendChild(body);
+      grid.appendChild(card);
+    });
+}
+
+function buildFilters(){
+  const bar = document.getElementById("filters");
+  const cats = ["all", ...Object.keys(CATEGORIES)];
+  cats.forEach(cat => {
+    const btn = document.createElement("button");
+    btn.textContent = cat === "all" ? "すべて" : CATEGORIES[cat];
+    btn.dataset.cat = cat;
+    if (cat === "all") btn.classList.add("active");
+    btn.addEventListener("click", () => {
+      bar.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      render(cat);
+    });
+    bar.appendChild(btn);
+  });
+}
+
+buildFilters();
+render("all");
+</script>
+
+</body>
+</html>
