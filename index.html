@@ -47,6 +47,10 @@
     color:var(--muted);
     font-size:0.9rem;
   }
+  header p.alt-url{
+    margin-top:6px;
+    font-size:0.78rem;
+  }
   .filters{
     max-width:1000px;
     margin:0 auto;
@@ -142,11 +146,21 @@
     font-size:0.72rem;
     color:var(--muted);
   }
+  .link-group{
+    display:flex;
+    gap:10px;
+    align-items:center;
+  }
   .open-link{
     font-size:0.85rem;
     color:var(--accent);
     text-decoration:none;
     font-weight:600;
+  }
+  .open-link.alt-link{
+    color:var(--muted);
+    font-weight:500;
+    font-size:0.78rem;
   }
   .open-link:hover{text-decoration:underline;}
   .no-link{
@@ -192,6 +206,7 @@
 <header>
   <h1>ダッシュボード</h1>
   <p>これまで作ったウェブアプリ・作品を一覧にしています。新しいものができたら、ハルに「追加して」と言ってください。</p>
+  <p class="alt-url">別URL(Netlify): <a class="open-link" href="https://ubiquitous-phoenix-412c89.netlify.app/">ubiquitous-phoenix-412c89.netlify.app</a></p>
 </header>
 
 <div class="filters" id="filters"></div>
@@ -212,6 +227,8 @@ const PROJECTS = [
     desc: "全国36のサーフスポットの波・風・潮汐をまとめて見られるアプリ。",
     image: "images/nami-info.png",
     link: "https://anji-1173.github.io/nami-info/",
+    altLink: "https://dulcet-biscuit-bfa94b.netlify.app/",
+    altLinkLabel: "Netlify",
     status: "live",
     updated: "2026-08-15",
   },
@@ -221,6 +238,8 @@ const PROJECTS = [
     desc: "毎日の行動記録をブラウザに保存できる、自分専用のタイムロガー。",
     image: "images/timelogger.png",
     link: "https://anji-1173.github.io/timelogger/",
+    altLink: "https://astounding-croissant-5b64c4.netlify.app/",
+    altLinkLabel: "Netlify",
     status: "live",
     updated: "2026-08-09",
   },
@@ -230,6 +249,8 @@ const PROJECTS = [
     desc: "沖縄の泡盛48酒造所を、マップや銘柄棚から巡れる図鑑ページ。",
     image: "images/awamori-zukan.png",
     link: "https://anji-1173.github.io/awamori-zukan/",
+    altLink: "https://startling-tapioca-305d38.netlify.app/",
+    altLinkLabel: "Netlify",
     status: "live",
     updated: "2026-08-10",
   },
@@ -239,6 +260,8 @@ const PROJECTS = [
     desc: "旧盆・シーミー・彼岸など、沖縄の年中行事の日程とお供えの仕方が分かるアプリ。",
     image: "images/ugwan-goyomi.png",
     link: "https://anji-1173.github.io/ugwan-goyomi/",
+    altLink: "https://lucent-faun-3dfacd.netlify.app/",
+    altLinkLabel: "Netlify",
     status: "live",
     updated: "2026-08-16",
   },
@@ -248,6 +271,8 @@ const PROJECTS = [
     desc: "note連載「沖縄そば巡りの旅」をもとにした、お店紹介ブログサイト。",
     image: "images/okinawa-soba.jpg",
     link: "https://anji-1173.github.io/okinawa-soba/",
+    altLink: "https://loquacious-blini-1df271.netlify.app/",
+    altLinkLabel: "Netlify",
     status: "live",
     updated: "2026-08-22",
   },
@@ -383,20 +408,35 @@ function render(filter){
         updated.textContent = p.updated ? "更新: " + p.updated : "";
         footer.appendChild(updated);
 
+        const links = document.createElement("div");
+        links.className = "link-group";
+
         if (p.link) {
           const a = document.createElement("a");
           a.className = "open-link";
           a.href = p.link;
           a.target = "_blank";
           a.rel = "noopener";
-          a.textContent = "開く →";
-          footer.appendChild(a);
+          a.textContent = (p.linkLabel || "開く") + " →";
+          links.appendChild(a);
         } else {
           const span = document.createElement("span");
           span.className = "no-link";
           span.textContent = "リンク未設定";
-          footer.appendChild(span);
+          links.appendChild(span);
         }
+
+        if (p.altLink) {
+          const a2 = document.createElement("a");
+          a2.className = "open-link alt-link";
+          a2.href = p.altLink;
+          a2.target = "_blank";
+          a2.rel = "noopener";
+          a2.textContent = (p.altLinkLabel || "別URL") + " →";
+          links.appendChild(a2);
+        }
+
+        footer.appendChild(links);
 
         body.appendChild(footer);
       }
