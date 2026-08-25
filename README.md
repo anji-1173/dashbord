@@ -18,8 +18,6 @@
   desc: "一言説明",
   image: "images/ファイル名.png",
   link: "https://...",
-  altLink: "https://...",       // 省略可: 2つ目のURL(例: Netlify版)
-  altLinkLabel: "Netlify",      // 省略可: 2つ目のリンクの表示名
   status: "live", // live=公開中 / sale=販売中 / wip=作成中
   updated: "2026-08-22",
 },
