@@ -24,6 +24,8 @@
     --badge-wip-text:#5b4b9c;
     --badge-unknown-bg:#eee;
     --badge-unknown-text:#666;
+    --badge-private-bg:#e7e5e1;
+    --badge-private-text:#57534a;
   }
   *{box-sizing:border-box;}
   body{
@@ -155,6 +157,7 @@
   .badge.sale{background:var(--badge-sale-bg);color:var(--badge-sale-text);}
   .badge.wip{background:var(--badge-wip-bg);color:var(--badge-wip-text);}
   .badge.unknown{background:var(--badge-unknown-bg);color:var(--badge-unknown-text);}
+  .badge.private{background:var(--badge-private-bg);color:var(--badge-private-text);}
   .card-footer{
     display:flex;
     justify-content:space-between;
@@ -303,10 +306,10 @@ const PROJECTS = [
   {
     name: "家族資産レッジャー",
     category: "webapp",
-    desc: "家族ごとの資産を、金融機関・取引所・銘柄別に確認し、評価額の推移も見られる非公開アプリ。",
+    desc: "家族ごとの資産を、金融機関・取引所・銘柄別に確認し、評価額の推移も見られるアプリ。非公開のため、リンクはここには載せていません。",
     icon: "¥",
-    link: "https://asset-management-private.anji-1173.chatgpt.site/",
-    status: "live",
+    link: "",
+    status: "private",
     updated: "2026-09-10",
   },
   {
@@ -350,6 +353,7 @@ const STATUS_LABEL = {
   live: "公開中",
   sale: "販売中",
   wip: "作成中",
+  private: "非公開",
   unknown: "未確認",
 };
 
