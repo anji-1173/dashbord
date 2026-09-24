@@ -1,0 +1,8 @@
+// Cloudflare で公開するための設定。リポジトリ直下の HTML・画像をそのまま配信する。
+{
+  "name": "dashbord",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./"
+  }
+}
